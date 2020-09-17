@@ -1,0 +1,29 @@
+.firstNoteClass {
+   background-color : blue;
+}
+
+.secondNoteClass {
+   background-color : yellow;
+}
+
+.thirdNoteClass {
+   background-color : green;
+}
+
+.forthNoteClass {
+   background-color : salmon;
+}
+
+.disabledNoteClass {
+   color:grey;
+}
+
+keyLineClass {
+   color: orange;
+}
+
+html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+}

@@ -1,0 +1,26 @@
+<html>
+<head>
+	<script src="berimbau.js"></script>
+	<link rel="stylesheet" href="berimbau.css">
+</head>
+<body>
+	<audio id="chiAudio" src="chi.wav"></audio>
+	<audio id="donAudio" src="don.wav"></audio>
+	<audio id="dinAudio" src="din.wav"></audio>
+
+  <form id="settingsForm">
+	<label for="typeSelect" >Type:</label>
+	<select id="typeSelect" onchange="changeType();">
+	   <option selected="selected">Gunga</option>
+	   <option >Medio</option>
+	   <option >Viola</option>
+	  </select>
+
+	  <input type="button" value="Chi" onclick="playChi()">
+	  <input type="button" value="Don" onclick="playDon()">
+	  <input type="button" value="Din" onclick="playDin()">
+  </form>
+
+
+</body>
+</html>
