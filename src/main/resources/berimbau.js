@@ -48,10 +48,10 @@ function keyUpHandler(event) {
 
 // create web audio api context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext);
-const chiURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.wav";
-const dinURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.wav";
-const donURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.wav";
-const mimeCodec = 'audio/wav';
+const chiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3";
+const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3";
+const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
+const mimeCodec = 'audio/mpeg';
 var gain;
 
 
@@ -84,26 +84,31 @@ function initAudio() {
         chiAudioElement = document.getElementById('chiAudio');
         var chiSource = new MediaSource();
         chiAudioElement.src = URL.createObjectURL(chiSource);
-        chiSource.addEventListener('sourceopen', sourceOpen)
+        chiSource.addEventListener('sourceopen', (evt) => sourceOpen(chiSource,chiURL));
         chiTrack = audioCtx.createMediaElementSource(chiAudioElement);
         chiTrack.connect(gain);
+
         dinAudioElement = document.getElementById('dinAudio');
+        var dinSource = new MediaSource();
+        dinAudioElement.src = URL.createObjectURL(dinSource);
+        dinSource.addEventListener('sourceopen', (evt) => sourceOpen(dinSource,dinURL));
         dinTrack = audioCtx.createMediaElementSource(dinAudioElement);
         dinTrack.connect(gain);
+
         donAudioElement = document.getElementById('donAudio');
+        var donSource = new MediaSource();
+        donAudioElement.src = URL.createObjectURL(donSource);
+        donSource.addEventListener('sourceopen', (evt) => sourceOpen(donSource,donURL));
         donTrack = audioCtx.createMediaElementSource(donAudioElement);
         donTrack.connect(gain);
 
 }
 
-function sourceOpen (_) {
-  var mediaSource = this;
+function sourceOpen (mediaSource,url) {
   var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
-  fetchAB(chiURL, function (buf) {
+  fetchAB(url, function (buf) {
     sourceBuffer.addEventListener('updateend', function (_) {
       mediaSource.endOfStream();
-      video.play();
-      //console.log(mediaSource.readyState); // ended
     });
     sourceBuffer.appendBuffer(buf);
   });
