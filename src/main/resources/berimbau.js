@@ -48,7 +48,10 @@ function keyUpHandler(event) {
 
 // create web audio api context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext);
-
+const chiURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.wav";
+const dinURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.wav";
+const donURL = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.wav";
+const mimeCodec = 'audio/wav';
 var gain;
 
 
@@ -79,6 +82,9 @@ function initAudio() {
         gain.connect(audioCtx.destination);
 
         chiAudioElement = document.getElementById('chiAudio');
+        var chiSource = new MediaSource();
+        chiAudioElement.src = URL.createObjectURL(chiSource);
+        chiSource.addEventListener('sourceopen', sourceOpen)
         chiTrack = audioCtx.createMediaElementSource(chiAudioElement);
         chiTrack.connect(gain);
         dinAudioElement = document.getElementById('dinAudio');
@@ -89,6 +95,30 @@ function initAudio() {
         donTrack.connect(gain);
 
 }
+
+function sourceOpen (_) {
+  var mediaSource = this;
+  var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+  fetchAB(chiURL, function (buf) {
+    sourceBuffer.addEventListener('updateend', function (_) {
+      mediaSource.endOfStream();
+      video.play();
+      //console.log(mediaSource.readyState); // ended
+    });
+    sourceBuffer.appendBuffer(buf);
+  });
+};
+
+function fetchAB (url, cb) {
+  console.log(url);
+  var xhr = new XMLHttpRequest;
+  xhr.open('get', url);
+  xhr.responseType = 'arraybuffer';
+  xhr.onload = function () {
+    cb(xhr.response);
+  };
+  xhr.send();
+};
 
 
 
