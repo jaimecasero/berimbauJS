@@ -14,6 +14,13 @@ window.onload = init;
 	console.log("init");
 	initAudio();
 
+    chiInput = document.getElementById('chiInput');
+	if (window.innerWidth < window.innerHeight) {
+        chiInput.width  = chiInput.innerWidth;
+    } else {
+        chiInput.width  = window.innerHeight;
+    }
+
     typeSelect = document.getElementById('typeSelect');
 
 
@@ -53,7 +60,7 @@ const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecase
 const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
 const mimeCodec = 'audio/mpeg';
 var gain;
-
+var synthDelay;
 
 var chiAudioElement;
 var dinAudioElement;
@@ -64,14 +71,20 @@ var donTrack;
 
 function playChi() {
     audioCtx.resume();
+    chiAudioElement.pause();
+    chiAudioElement.currentTime = 0;
     chiAudioElement.play();
 }
 function playDin() {
     audioCtx.resume();
+    dinAudioElement.pause();
+    dinAudioElement.currentTime = 0;
     dinAudioElement.play();
 }
 function playDon() {
     audioCtx.resume();
+    donAudioElement.pause();
+    donAudioElement.currentTime = 0;
     donAudioElement.play();
 }
 

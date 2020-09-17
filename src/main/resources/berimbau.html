@@ -8,7 +8,7 @@
 	<audio id="donAudio"></audio>
 	<audio id="dinAudio"></audio>
 
-  <form id="settingsForm">
+  <form id="settingsForm" class="berimbauForm">
 	<label for="typeSelect" >Type:</label>
 	<select id="typeSelect" onchange="changeType();">
 	   <option selected="selected">Gunga</option>
@@ -16,11 +16,10 @@
 	   <option >Viola</option>
 	  </select>
 
-	  <input type="button" value="Chi" onclick="playChi()">
-	  <input type="button" value="Don" onclick="playDon()">
-	  <input type="button" value="Din" onclick="playDin()">
+	  <input id="chiInput" type="button" value="Chi" onclick="playChi()">
+	  <input id="donInput" type="button" value="Don" onclick="playDon()">
+	  <input id="dinInput" type="button" value="Din" onclick="playDin()">
   </form>
-
 
 </body>
 </html>
