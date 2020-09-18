@@ -11,6 +11,7 @@ const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, c
 const toqueBeatArray = [4,4,5,5,6,5,6,5];
 ////////DOM CACHING//////////////////
 var typeSelect;
+var beatSelect;
 const inputElement=[];
 
 (function(window, document, undefined){
@@ -24,28 +25,47 @@ window.onload = init;
     //cachec inputs and register touch
     for (var i = 0; i < 3; i++) {
         inputElement[i] = document.getElementById('input' + i);
-        //register multitouch listener
-        inputElement[i].addEventListener('touchstart', function(event) {
-              event.preventDefault();
-              //resume audiocontext on canvas touch
-              audioCtx.resume();
-              play(i);
-        }, false);
-
     }
+    //register multitouch listener
+    inputElement[0].addEventListener('touchstart', function(event) {
+          event.preventDefault();
+          //resume audiocontext on canvas touch
+          audioCtx.resume();
+          play(0);
+    }, false);
+    //register multitouch listener
+    inputElement[1].addEventListener('touchstart', function(event) {
+          event.preventDefault();
+          //resume audiocontext on canvas touch
+          audioCtx.resume();
+          play(1);
+    }, false);
+    //register multitouch listener
+    inputElement[2].addEventListener('touchstart', function(event) {
+          event.preventDefault();
+          //resume audiocontext on canvas touch
+          audioCtx.resume();
+          play(2);
+    }, false);
+
+
 
 	initAudio();
 
 
 
     typeSelect = document.getElementById('typeSelect');
+    beatSelect = document.getElementById('beatSelect');
 
 
     //register key handlers
 	document.addEventListener("keydown",keyDownHandler, false);
 	document.addEventListener("keyup",keyUpHandler, false);
 
+     changeBeat();
+     changeType();
 
+     console.log("initiated");
   }
 
 })(window, document, undefined);
@@ -73,7 +93,24 @@ function keyUpHandler(event) {
 
 
 //////////////////////////// CONFIGURATION ////////////////////////////
+function changeBeat() {
+    var beatIndex = beatSelect.value;
+    console.log("beat" + beatIndex);
+    var j = 0;
+    for (var i = 0; i < toqueArray[beatIndex].length; i++) {
+        var remainder = i % toqueBeatArray[beatIndex];
+        var row = Math.floor(i / toqueBeatArray[beatIndex]);
+        var noteInput = document.getElementById("note" + row + remainder );
+        noteInput.value = toqueArray[beatIndex][i];
+    }
+}
 
+function changeType() {
+    var typeValue = typeSelect.value;
+    for (var i = 0; i < audioElement.length; i++) {
+        audioElement[i].playbackRate=typeValue;
+    }
+}
 ////////////////////// audio ctrl //////////////////////
 
 // create web audio api context
@@ -102,30 +139,31 @@ function play(noteNumber) {
 
 
 function initAudio() {
-        gain = audioCtx.createGain();
-        //set a very low gain value to  make it as quiet as possible
-        gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
-        gain.connect(audioCtx.destination);
-        convolver = audioCtx.createConvolver();
-        convolver.connect(gain);
-        loadImpulse(reverbImpulseURL);
+    console.log("init audio");
+    gain = audioCtx.createGain();
+    //set a very low gain value to  make it as quiet as possible
+    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    gain.connect(audioCtx.destination);
+    convolver = audioCtx.createConvolver();
+    convolver.connect(gain);
+    loadImpulse(reverbImpulseURL);
 
-        for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 3; i++) {
 
-            audioElement[i] = document.getElementById('audio' + i);
-            mediaSource[i] = new MediaSource();
-            audioElement[i].src = URL.createObjectURL(mediaSource[i]);
-        };
-        mediaSource[0].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[0],noteUrl[0]));
-        mediaSource[1].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[1],noteUrl[1]));
-        mediaSource[2].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[2],noteUrl[2]));
+        audioElement[i] = document.getElementById('audio' + i);
+        mediaSource[i] = new MediaSource();
+        audioElement[i].src = URL.createObjectURL(mediaSource[i]);
+    };
+    mediaSource[0].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[0],noteUrl[0]));
+    mediaSource[1].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[1],noteUrl[1]));
+    mediaSource[2].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[2],noteUrl[2]));
 
-        for (var i = 0; i < 3; i++) {
-            track[i] = audioCtx.createMediaElementSource(audioElement[i]);
-            track[i].connect(convolver);
-        }
+    for (var i = 0; i < 3; i++) {
+        track[i] = audioCtx.createMediaElementSource(audioElement[i]);
+        track[i].connect(convolver);
+    }
 
-
+    console.log("audio started")
 }
 
 var loadImpulse = function ( url )

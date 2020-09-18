@@ -12,25 +12,56 @@
   <form id="settingsForm" class="berimbauForm">
 	<label for="typeSelect" >Type:</label>
 	<select id="typeSelect" onchange="changeType();">
-	   <option selected="selected">Gunga</option>
-	   <option >Medio</option>
-	   <option >Viola</option>
+	   <option  value="0.8">Gunga</option>
+	   <option selected="selected" value="1.0">Medio</option>
+	   <option value="1.2">Viola</option>
 	  </select>
 	  <label for="beatSelect" >Toque:</label>
 	  <select id="beatSelect" onchange="changeBeat();">
-		  <option selected="selected">Angola</option>
-		  <option >SaoBentoPeq</option>
-		  <option >SaoBentoGrande</option>
-		  <option >Benguela</option>
-		  <option >SantaMaria</option>
-		  <option >Cavalaria</option>
-		  <option >Amazonas</option>
-		  <option >Iuna</option>
+		  <option selected="selected" value="0">Angola</option>
+		  <option value="1">SaoBentoPeq</option>
+		  <option value="2">SaoBentoGrande</option>
+		  <option value="3">Benguela</option>
+		  <option value="4">SantaMaria</option>
+		  <option value="5">Cavalaria</option>
+		  <option value="6">Amazonas</option>
+		  <option value="7">Iuna</option>
 
 	  </select>
-	  <input type="button" id="input0" value="Chi" onmousedown="play(0)">
-	  <input type="button" id="input1"  value="Don" onmousedown="play(1)">
-	  <input type="button" id="input2" value="Din" onmousedown="play(2)">
+	  <br>
+	  <br>
+	  <input type="text" id="note00">
+	  <input type="text" id="note01">
+	  <input type="text" id="note02">
+	  <input type="text" id="note03">
+	  <input type="text" id="note04">
+	  <input type="text" id="note05">
+	  <br>
+	  <input type="text" id="note10">
+	  <input type="text" id="note11">
+	  <input type="text" id="note12">
+	  <input type="text" id="note13">
+	  <input type="text" id="note14">
+	  <input type="text" id="note15">
+	  <br>
+	  <input type="text" id="note20">
+	  <input type="text" id="note21">
+	  <input type="text" id="note22">
+	  <input type="text" id="note23">
+	  <input type="text" id="note24">
+	  <input type="text" id="note25">
+	  <br>
+	  <input type="text" id="note30">
+	  <input type="text" id="note31">
+	  <input type="text" id="note32">
+	  <input type="text" id="note33">
+	  <input type="text" id="note34">
+	  <input type="text" id="note35">
+	  <br>
+	  <br>
+	  <input class="noteButton" type="button" id="input0" value="Chi" onmousedown="play(0)">
+	  <input class="noteButton" type="button" id="input1"  value="Don" onmousedown="play(1)">
+	  <input class="noteButton" type="button" id="input2" value="Din" onmousedown="play(2)">
   </form>
 
 </body>
