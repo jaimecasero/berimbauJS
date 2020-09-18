@@ -7,7 +7,8 @@ const santaMaria = ['chi', 'chi', 'don', 'don', 'don', 'don', 'chi', 'chi', 'don
 const cavalaria = ['don', 'chi', 'don', 'chi', 'don', 'chi', 'don', 'din', 'don', 'chi', 'don', 'don', 'don', 'don', 'don', 'don', 'don', 'din', 'don', 'chi'];
 const amazonas = ['chi', 'chi', 'don', 'din'];
 const iuna = ['chi', 'chi', 'don', 'din'];
-
+const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna];
+const toqueBeatArray = [4,4,5,5,6,5,6,5];
 ////////DOM CACHING//////////////////
 var typeSelect;
 const inputElement=[];
@@ -20,7 +21,7 @@ window.onload = init;
     // #document has its nodes
 	console.log("init");
 
-
+    //cachec inputs and register touch
     for (var i = 0; i < 3; i++) {
         inputElement[i] = document.getElementById('input' + i);
         //register multitouch listener
@@ -56,13 +57,13 @@ window.onload = init;
 function keyDownHandler(event) {
 	var keyPressed = String.fromCharCode(event.keyCode);
     if (event.keyCode == 49) {
-        playChi();
+        play(0);
 	}
     if (event.keyCode == 50) {
-        playDon();
+        play(1);
 	}
     if (event.keyCode == 51) {
-        playDin();
+        play(2);
 	}
 }
 
@@ -103,6 +104,12 @@ function initAudio() {
         //set a very low gain value to  make it as quiet as possible
         gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
         gain.connect(audioCtx.destination);
+
+        let convolver = audioCtx.createConvolver();
+        // load impulse response from file
+        let response     = await fetch("path/to/impulse-response.wav");
+        let arraybuffer  = await response.arrayBuffer();
+        convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
 
         for (var i = 0; i < 3; i++) {
 
