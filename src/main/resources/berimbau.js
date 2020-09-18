@@ -1,9 +1,16 @@
 ////////////////////////MODEL //////////////////////////////////////
-
-
+const angola = ['chi', 'chi', 'don', 'din'];
+const saoBentoPeq = ['chi', 'chi', 'din', 'don'];
+const saoBentoGrande = ['chi', 'chi', 'din', 'don', 'don'];
+const benguela = ['chi', 'chi', 'don', 'din', 'din'];
+const santaMaria = ['chi', 'chi', 'don', 'don', 'don', 'don', 'chi', 'chi', 'don', 'don', 'don', 'din', 'chi', 'chi','din', 'din','din', 'din','chi', 'chi', 'din', 'din','din', 'don'];
+const cavalaria = ['don', 'chi', 'don', 'chi', 'don', 'chi', 'don', 'din', 'don', 'chi', 'don', 'don', 'don', 'don', 'don', 'don', 'don', 'din', 'don', 'chi'];
+const amazonas = ['chi', 'chi', 'don', 'din'];
+const iuna = ['chi', 'chi', 'don', 'din'];
 
 ////////DOM CACHING//////////////////
 var typeSelect;
+const inputElement=[];
 
 (function(window, document, undefined){
 window.onload = init;
@@ -12,14 +19,23 @@ window.onload = init;
     // the code to be called when the dom has loaded
     // #document has its nodes
 	console.log("init");
+
+
+    for (var i = 0; i < 3; i++) {
+        inputElement[i] = document.getElementById('input' + i);
+        //register multitouch listener
+        inputElement[i].addEventListener('touchstart', function(event) {
+              event.preventDefault();
+              //resume audiocontext on canvas touch
+              audioCtx.resume();
+              play(i);
+        }, false);
+
+    }
+
 	initAudio();
 
-    chiInput = document.getElementById('chiInput');
-	if (window.innerWidth < window.innerHeight) {
-        chiInput.width  = chiInput.innerWidth;
-    } else {
-        chiInput.width  = window.innerHeight;
-    }
+
 
     typeSelect = document.getElementById('typeSelect');
 
@@ -39,8 +55,14 @@ window.onload = init;
 
 function keyDownHandler(event) {
 	var keyPressed = String.fromCharCode(event.keyCode);
-    if (event.keyCode >= 48 && event.keyCode <= 57) {
-
+    if (event.keyCode == 49) {
+        playChi();
+	}
+    if (event.keyCode == 50) {
+        playDon();
+	}
+    if (event.keyCode == 51) {
+        playDin();
 	}
 }
 
@@ -58,35 +80,23 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext);
 const chiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3";
 const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3";
 const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
+const noteUrl = [chiURL, donURL, dinURL];
 const mimeCodec = 'audio/mpeg';
 var gain;
 var synthDelay;
 
-var chiAudioElement;
-var dinAudioElement;
-var donAudioElement;
-var chiTrack;
-var dinTrack;
-var donTrack;
+const audioElement = [];
+const track = [];
+const mediaSource = [];
 
-function playChi() {
+function play(noteNumber) {
+    console.log(noteNumber);
     audioCtx.resume();
-    chiAudioElement.pause();
-    chiAudioElement.currentTime = 0;
-    chiAudioElement.play();
+    audioElement[noteNumber].pause();
+    audioElement[noteNumber].currentTime = 0;
+    audioElement[noteNumber].play();
 }
-function playDin() {
-    audioCtx.resume();
-    dinAudioElement.pause();
-    dinAudioElement.currentTime = 0;
-    dinAudioElement.play();
-}
-function playDon() {
-    audioCtx.resume();
-    donAudioElement.pause();
-    donAudioElement.currentTime = 0;
-    donAudioElement.play();
-}
+
 
 function initAudio() {
         gain = audioCtx.createGain();
@@ -94,32 +104,27 @@ function initAudio() {
         gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
         gain.connect(audioCtx.destination);
 
-        chiAudioElement = document.getElementById('chiAudio');
-        var chiSource = new MediaSource();
-        chiAudioElement.src = URL.createObjectURL(chiSource);
-        chiSource.addEventListener('sourceopen', (evt) => sourceOpen(chiSource,chiURL));
-        chiTrack = audioCtx.createMediaElementSource(chiAudioElement);
-        chiTrack.connect(gain);
+        for (var i = 0; i < 3; i++) {
 
-        dinAudioElement = document.getElementById('dinAudio');
-        var dinSource = new MediaSource();
-        dinAudioElement.src = URL.createObjectURL(dinSource);
-        dinSource.addEventListener('sourceopen', (evt) => sourceOpen(dinSource,dinURL));
-        dinTrack = audioCtx.createMediaElementSource(dinAudioElement);
-        dinTrack.connect(gain);
+            audioElement[i] = document.getElementById('audio' + i);
+            mediaSource[i] = new MediaSource();
+            audioElement[i].src = URL.createObjectURL(mediaSource[i]);
+        };
+        mediaSource[0].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[0],noteUrl[0]));
+        mediaSource[1].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[1],noteUrl[1]));
+        mediaSource[2].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[2],noteUrl[2]));
 
-        donAudioElement = document.getElementById('donAudio');
-        var donSource = new MediaSource();
-        donAudioElement.src = URL.createObjectURL(donSource);
-        donSource.addEventListener('sourceopen', (evt) => sourceOpen(donSource,donURL));
-        donTrack = audioCtx.createMediaElementSource(donAudioElement);
-        donTrack.connect(gain);
+        for (var i = 0; i < 3; i++) {
+            track[i] = audioCtx.createMediaElementSource(audioElement[i]);
+            track[i].connect(gain);
+        }
+
 
 }
 
-function sourceOpen (mediaSource,url) {
+function sourceOpen (mediaSource,currentURL) {
   var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
-  fetchAB(url, function (buf) {
+  fetchAB(currentURL, function (buf) {
     sourceBuffer.addEventListener('updateend', function (_) {
       mediaSource.endOfStream();
     });

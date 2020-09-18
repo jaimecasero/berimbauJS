@@ -2,11 +2,12 @@
 <head>
 	<script src="berimbau.js"></script>
 	<link rel="stylesheet" href="berimbau.css">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
 </head>
 <body>
-	<audio id="chiAudio"></audio>
-	<audio id="donAudio"></audio>
-	<audio id="dinAudio"></audio>
+	<audio id="audio0"></audio>
+	<audio id="audio1"></audio>
+	<audio id="audio2"></audio>
 
   <form id="settingsForm" class="berimbauForm">
 	<label for="typeSelect" >Type:</label>
@@ -15,10 +16,21 @@
 	   <option >Medio</option>
 	   <option >Viola</option>
 	  </select>
+	  <label for="beatSelect" >Toque:</label>
+	  <select id="beatSelect" onchange="changeBeat();">
+		  <option selected="selected">Angola</option>
+		  <option >SaoBentoPeq</option>
+		  <option >SaoBentoGrande</option>
+		  <option >Benguela</option>
+		  <option >SantaMaria</option>
+		  <option >Cavalaria</option>
+		  <option >Amazonas</option>
+		  <option >Iuna</option>
 
-	  <input id="chiInput" type="button" value="Chi" onclick="playChi()">
-	  <input id="donInput" type="button" value="Don" onclick="playDon()">
-	  <input id="dinInput" type="button" value="Din" onclick="playDin()">
+	  </select>
+	  <input type="button" id="input0" value="Chi" onmousedown="play(0)">
+	  <input type="button" id="input1"  value="Don" onmousedown="play(1)">
+	  <input type="button" id="input2" value="Din" onmousedown="play(2)">
   </form>
 
 </body>

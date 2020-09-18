@@ -3,7 +3,7 @@ html, body {
   height: 100%;
   margin: 0;
 }
-input{
+input {
   display: block; /* Make the buttons appear below each other */
   width: 400px;
   height: 200px;
