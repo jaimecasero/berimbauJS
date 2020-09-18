@@ -81,9 +81,11 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext);
 const chiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3";
 const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3";
 const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
+const reverbImpulseURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/factory.hall.wav";
 const noteUrl = [chiURL, donURL, dinURL];
 const mimeCodec = 'audio/mpeg';
 var gain;
+var convolver;
 var synthDelay;
 
 const audioElement = [];
@@ -104,12 +106,9 @@ function initAudio() {
         //set a very low gain value to  make it as quiet as possible
         gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
         gain.connect(audioCtx.destination);
-
-        let convolver = audioCtx.createConvolver();
-        // load impulse response from file
-        let response     = await fetch("path/to/impulse-response.wav");
-        let arraybuffer  = await response.arrayBuffer();
-        convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
+        convolver = audioCtx.createConvolver();
+        convolver.connect(gain);
+        loadImpulse(reverbImpulseURL);
 
         for (var i = 0; i < 3; i++) {
 
@@ -123,11 +122,28 @@ function initAudio() {
 
         for (var i = 0; i < 3; i++) {
             track[i] = audioCtx.createMediaElementSource(audioElement[i]);
-            track[i].connect(gain);
+            track[i].connect(convolver);
         }
 
 
 }
+
+var loadImpulse = function ( url )
+{
+  var request = new XMLHttpRequest();
+  request.open( "GET", url, true );
+  request.responseType = "arraybuffer";
+  request.onload = function ()
+  {
+    audioCtx.decodeAudioData( request.response, function ( buffer ) {
+      convolver.buffer = buffer;
+    }, function ( e ) { console.log( e ); } );
+  };request.onerror = function ( e )
+  {
+    console.log( e );
+  };
+  request.send();
+};
 
 function sourceOpen (mediaSource,currentURL) {
   var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
