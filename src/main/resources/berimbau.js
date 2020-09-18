@@ -5,8 +5,8 @@ const saoBentoGrande = ['chi', 'chi', 'din', 'don', 'don'];
 const benguela = ['chi', 'chi', 'don', 'din', 'din'];
 const santaMaria = ['chi', 'chi', 'don', 'don', 'don', 'don', 'chi', 'chi', 'don', 'don', 'don', 'din', 'chi', 'chi','din', 'din','din', 'din','chi', 'chi', 'din', 'din','din', 'don'];
 const cavalaria = ['don', 'chi', 'don', 'chi', 'don', 'chi', 'don', 'din', 'don', 'chi', 'don', 'don', 'don', 'don', 'don', 'don', 'don', 'din', 'don', 'chi'];
-const amazonas = ['chi', 'chi', 'don', 'din'];
-const iuna = ['chi', 'chi', 'don', 'din'];
+const amazonas = ['chi', 'chi', 'don', 'don','din','', 'chi', 'chi', 'don', 'chi','don','din', 'chi', 'chi', 'don', 'don','don','don','din', 'don', 'chi', 'don','don','din'];
+const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', '', 'don', 'don', 'don', 'don', 'don', 'doinch','doinch', 'chi', 'don', 'doinch', 'doinch'];
 const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna];
 const toqueBeatArray = [4,4,5,5,6,5,6,5];
 ////////DOM CACHING//////////////////
@@ -94,6 +94,7 @@ function keyUpHandler(event) {
 
 //////////////////////////// CONFIGURATION ////////////////////////////
 function changeBeat() {
+    clearAllNotes();
     var beatIndex = beatSelect.value;
     console.log("beat" + beatIndex);
     var j = 0;
@@ -103,6 +104,16 @@ function changeBeat() {
         var noteInput = document.getElementById("note" + row + remainder );
         noteInput.value = toqueArray[beatIndex][i];
     }
+}
+
+function clearAllNotes() {
+    for (var i = 0; i < 6; i++) {
+        for (var j = 0; i < 4; i++) {
+            var noteInput = document.getElementById("note" + i + j );
+            noteInput.value = '';
+        }
+    }
+
 }
 
 function changeType() {
