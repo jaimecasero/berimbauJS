@@ -13,6 +13,7 @@ const MAX_NOTE = 5;
 ////////DOM CACHING//////////////////
 var typeSelect;
 var beatSelect;
+var caxixiSelect;
 const inputElement=[];
 var currentNote = 0;
 
@@ -25,7 +26,7 @@ window.onload = init;
 	console.log("init");
 
     //cachec inputs and register touch
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NOTE; i++) {
         inputElement[i] = document.getElementById('input' + i);
     }
     //register multitouch listener
@@ -49,6 +50,18 @@ window.onload = init;
           audioCtx.resume();
           play(2);
     }, false);
+    inputElement[3].addEventListener('touchstart', function(event) {
+          event.preventDefault();
+          //resume audiocontext on canvas touch
+          audioCtx.resume();
+          play(3);
+    }, false);
+    inputElement[4].addEventListener('touchstart', function(event) {
+          event.preventDefault();
+          //resume audiocontext on canvas touch
+          audioCtx.resume();
+          play(4);
+    }, false);
 
 
 
@@ -58,7 +71,7 @@ window.onload = init;
 
     typeSelect = document.getElementById('typeSelect');
     beatSelect = document.getElementById('beatSelect');
-
+    caxixiSelect = document.getElementById('caxixiSelect');
 
     //register key handlers
 	document.addEventListener("keydown",keyDownHandler, false);
@@ -136,7 +149,7 @@ const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecase
 const doinchURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/doinch.mp3";
 const caxixiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/caxixi.mp3";
 const reverbImpulseURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/factory.hall.wav";
-const noteUrl = [chiURL, donURL, dinURL,doinchURL, caxixi];
+const noteUrl = [chiURL, donURL, dinURL,doinchURL, caxixiURL];
 const mimeCodec = 'audio/mpeg';
 var gain;
 var convolver;
@@ -153,6 +166,13 @@ function play(noteNumber) {
     audioElement[noteNumber].currentTime = 0;
     audioElement[noteNumber].play();
     checkNoteMatch(noteNumber);
+    if (caxixiSelect.value == 0) {
+        audioElement[4].pause();
+        audioElement[4].currentTime = 0;
+        audioElement[4].play();
+
+    }
+
 }
 
 function checkNoteMatch(noteNumber) {
@@ -163,7 +183,8 @@ function checkNoteMatch(noteNumber) {
     var color = "green";
     if ((noteNumber == 0 && toqueArray[beatIndex][currentNote] == 'chi') ||
     (noteNumber == 1 && toqueArray[beatIndex][currentNote] == 'don') ||
-    (noteNumber == 2 && toqueArray[beatIndex][currentNote] == 'din')) {
+    (noteNumber == 2 && toqueArray[beatIndex][currentNote] == 'din') ||
+    (noteNumber == 3 && toqueArray[beatIndex][currentNote] == 'doinch')) {
         color = "green";
         currentNote = currentNote + 1;
 
@@ -171,6 +192,10 @@ function checkNoteMatch(noteNumber) {
         color = "red";
     }
     noteInput.style.backgroundColor = color;
+    //skip next note if is silence/empty
+    if (toqueArray[beatIndex][currentNote] == '') {
+        currentNote = currentNote + 1;
+    }
     if (currentNote >= toqueArray[beatIndex].length) {
         currentNote = 0;
         changeBeat();
@@ -181,27 +206,24 @@ function checkNoteMatch(noteNumber) {
 function initAudio() {
     console.log("init audio");
     gain = audioCtx.createGain();
+    console.log("gain crated");
+
     //set a very low gain value to  make it as quiet as possible
     gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
     gain.connect(audioCtx.destination);
     convolver = audioCtx.createConvolver();
     convolver.connect(gain);
+    console.log("convolver crated");
+
     loadImpulse(reverbImpulseURL);
+    console.log("impulse loaded");
 
     for (var i = 0; i < MAX_NOTE; i++) {
 
         audioElement[i] = document.getElementById('audio' + i);
-        mediaSource[i] = new MediaSource();
-        audioElement[i].src = URL.createObjectURL(mediaSource[i]);
+        console.log("audio element found");
     };
-    mediaSource[0].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[0],noteUrl[0]));
-    mediaSource[1].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[1],noteUrl[1]));
-    mediaSource[2].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[2],noteUrl[2]));
 
-    for (var i = 0; i < MAX_NOTE; i++) {
-        track[i] = audioCtx.createMediaElementSource(audioElement[i]);
-        track[i].connect(convolver);
-    }
 
     console.log("audio started")
 }
@@ -222,29 +244,3 @@ var loadImpulse = function ( url )
   };
   request.send();
 };
-
-function sourceOpen (mediaSource,currentURL) {
-  var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
-  fetchAB(currentURL, function (buf) {
-    sourceBuffer.addEventListener('updateend', function (_) {
-      mediaSource.endOfStream();
-    });
-    sourceBuffer.appendBuffer(buf);
-  });
-};
-
-function fetchAB (url, cb) {
-  console.log(url);
-  var xhr = new XMLHttpRequest;
-  xhr.open('get', url);
-  xhr.responseType = 'arraybuffer';
-  xhr.onload = function () {
-    cb(xhr.response);
-  };
-  xhr.send();
-};
-
-
-
-
-
