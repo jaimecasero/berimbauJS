@@ -19,10 +19,13 @@ const saoBentoGrandeReg = ['chi', 'chi', 'don', 'don', 'din'];
 const saoBentoGrandeRegDelay = [250,400,500,500,500];
 const saoBentoGrandeBimba = ['chi', 'chi', 'don', 'chi', 'din', 'chi', 'chi', 'don', 'don', 'din'];
 const saoBentoGrandeBimbaDelay = [250,400,500,500,500,250,400,500,500,500];
-const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna, saoBentoGrandeReg, saoBentoGrandeBimba];
-const toqueDelayArray = [angolaDelay, saoBentoPeqDelay, saoBentoGrandeDelay, benguelaDelay, santaMariaDelay, cavalariaDelay,amazonasDelay,iunaDelay, saoBentoGrandeRegDelay, saoBentoGrandeBimbaDelay];
+const idalina = ['don', 'don', 'din', 'don', 'don', 'chi', 'din'];
+const idalinaDelay = [400,400,700,400,600,300,600];
 
-const toqueBeatArray = [4,4,5,5,6,5,6,5,5,5];
+const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna, saoBentoGrandeReg, saoBentoGrandeBimba, idalina];
+const toqueDelayArray = [angolaDelay, saoBentoPeqDelay, saoBentoGrandeDelay, benguelaDelay, santaMariaDelay, cavalariaDelay,amazonasDelay,iunaDelay, saoBentoGrandeRegDelay, saoBentoGrandeBimbaDelay, idalinaDelay];
+
+const toqueBeatArray = [4,4,5,5,6,5,6,5,5,5,3];
 const MAX_NOTE = 5;
 ////////DOM CACHING//////////////////
 var typeSelect;
