@@ -9,10 +9,12 @@ const amazonas = ['chi', 'chi', 'don', 'don','din','', 'chi', 'chi', 'don', 'chi
 const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', '', 'don', 'don', 'don', 'don', 'don', 'doinch','doinch', 'chi', 'don', 'doinch', 'doinch'];
 const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna];
 const toqueBeatArray = [4,4,5,5,6,5,6,5];
+const MAX_NOTE = 5;
 ////////DOM CACHING//////////////////
 var typeSelect;
 var beatSelect;
 const inputElement=[];
+var currentNote = 0;
 
 (function(window, document, undefined){
 window.onload = init;
@@ -94,6 +96,7 @@ function keyUpHandler(event) {
 
 //////////////////////////// CONFIGURATION ////////////////////////////
 function changeBeat() {
+    currentNote = 0;
     clearAllNotes();
     var beatIndex = beatSelect.value;
     console.log("beat" + beatIndex);
@@ -111,6 +114,7 @@ function clearAllNotes() {
         for (var j = 0; j < 6; j++) {
             var noteInput = document.getElementById("note" + i + j );
             noteInput.value = '';
+            noteInput.style.backgroundColor = "white";
         }
     }
 
@@ -129,8 +133,10 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext);
 const chiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3";
 const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3";
 const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
+const doinchURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/doinch.mp3";
+const caxixiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/caxixi.mp3";
 const reverbImpulseURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/factory.hall.wav";
-const noteUrl = [chiURL, donURL, dinURL];
+const noteUrl = [chiURL, donURL, dinURL,doinchURL, caxixi];
 const mimeCodec = 'audio/mpeg';
 var gain;
 var convolver;
@@ -146,6 +152,29 @@ function play(noteNumber) {
     audioElement[noteNumber].pause();
     audioElement[noteNumber].currentTime = 0;
     audioElement[noteNumber].play();
+    checkNoteMatch(noteNumber);
+}
+
+function checkNoteMatch(noteNumber) {
+    var beatIndex = beatSelect.value;
+    var remainder = currentNote % toqueBeatArray[beatIndex];
+    var row = Math.floor(currentNote / toqueBeatArray[beatIndex]);
+    var noteInput = document.getElementById("note" + row + remainder );
+    var color = "green";
+    if ((noteNumber == 0 && toqueArray[beatIndex][currentNote] == 'chi') ||
+    (noteNumber == 1 && toqueArray[beatIndex][currentNote] == 'don') ||
+    (noteNumber == 2 && toqueArray[beatIndex][currentNote] == 'din')) {
+        color = "green";
+        currentNote = currentNote + 1;
+
+    } else {
+        color = "red";
+    }
+    noteInput.style.backgroundColor = color;
+    if (currentNote >= toqueArray[beatIndex].length) {
+        currentNote = 0;
+        changeBeat();
+    }
 }
 
 
@@ -159,7 +188,7 @@ function initAudio() {
     convolver.connect(gain);
     loadImpulse(reverbImpulseURL);
 
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NOTE; i++) {
 
         audioElement[i] = document.getElementById('audio' + i);
         mediaSource[i] = new MediaSource();
@@ -169,7 +198,7 @@ function initAudio() {
     mediaSource[1].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[1],noteUrl[1]));
     mediaSource[2].addEventListener('sourceopen', (evt) => sourceOpen(mediaSource[2],noteUrl[2]));
 
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NOTE; i++) {
         track[i] = audioCtx.createMediaElementSource(audioElement[i]);
         track[i].connect(convolver);
     }

@@ -8,6 +8,8 @@
 	<audio id="audio0"></audio>
 	<audio id="audio1"></audio>
 	<audio id="audio2"></audio>
+	<audio id="audio3"></audio>
+	<audio id="audio4"></audio>
 
   <form id="settingsForm" class="berimbauForm">
 	<label for="typeSelect" >Type:</label>
@@ -27,6 +29,11 @@
 		  <option value="6">Amazonas</option>
 		  <option value="7">Iuna</option>
 
+	  </select>
+	  <label for="caxixiSelect" >Caxixi:</label>
+	  <select id="caxixiSelect" onchange="changeBeat();">
+		  <option selected="selected" value="0">On</option>
+		  <option value="1">Off</option>
 	  </select>
 	  <br>
 	  <br>
@@ -62,6 +69,7 @@
 	  <input class="noteButton" type="button" id="input0" value="Chi" onmousedown="play(0)">
 	  <input class="noteButton" type="button" id="input1"  value="Don" onmousedown="play(1)">
 	  <input class="noteButton" type="button" id="input2" value="Din" onmousedown="play(2)">
+	  <input class="noteButton" type="button" id="input3" value="Doinch" onmousedown="play(3)">
   </form>
 
 </body>
