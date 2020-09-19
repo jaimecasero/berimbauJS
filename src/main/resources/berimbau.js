@@ -1,20 +1,20 @@
 ////////////////////////MODEL //////////////////////////////////////
 const angola = ['chi', 'chi', 'don', 'din'];
-const angolaDelay = [250,400,500,800];
+const angolaDelay = [250,400,600,1000];
 const saoBentoPeq = ['chi', 'chi', 'din', 'don'];
-const saoBentoPeqDelay = [250,400,500,800];
+const saoBentoPeqDelay = [250,400,500,1000];
 const saoBentoGrande = ['chi', 'chi', 'din', 'don', 'don'];
 const saoBentoGrandeDelay = [250,400,500,500,500];
 const benguela = ['chi', 'chi', 'don', 'din', 'din'];
-const benguelaDelay = [250,400,500,500,500];
+const benguelaDelay = [250,400,600,500,500];
 const santaMaria = ['chi', 'chi', 'don', 'don', 'don', 'don', 'chi', 'chi', 'don', 'don', 'don', 'din', 'chi', 'chi','din', 'din','din', 'din','chi', 'chi', 'din', 'din','din', 'don'];
-const santaMariaDelay = [250,500,500,500,500];
+const santaMariaDelay = [400,300,600,300,300,400,400,300,600,300,300,400,400,300,600,300,300,400,400,300,600,300,300,400];
 const cavalaria = ['don', 'chi', 'don', 'chi', 'don', 'chi', 'don', 'din', 'don', 'chi', 'don', 'don', 'don', 'don', 'don', 'don', 'don', 'din', 'don', 'chi'];
-const cavalariaDelay = [250,500,500,500,500];
+const cavalariaDelay = [250,400,500,500,500,250,400,500,500,500,250,400,500,500,500,250,400,500,500,500];
 const amazonas = ['chi', 'chi', 'don', 'don','din','', 'chi', 'chi', 'don', 'chi','don','din', 'chi', 'chi', 'don', 'don','don','don','din', 'don', 'chi', 'don','don','din'];
-const amazonasDelay = [250,500,500,500,500];
-const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', '', 'don', 'don', 'don', 'don', 'don', 'doinch','doinch', 'chi', 'don', 'doinch'];
-const iunaDelay = [250,500,500,500,500];
+const amazonasDelay = [250,600,500,500,500,500,250,600,600,400,400,400,250,400,400,400,400,400,400,400,600,400,400,900];
+const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', 'don', 'don', 'don', 'don', 'doinch', 'doinch','doinch', 'don', 'chi', 'don', 'doinch'];
+const iunaDelay = [500,500,500,500,800,400,500,500,900,300,300,300,300,500,500,800,600,500,500,900];
 const saoBentoGrandeReg = ['chi', 'chi', 'don', 'don', 'din'];
 const saoBentoGrandeRegDelay = [250,400,500,500,500];
 const saoBentoGrandeBimba = ['chi', 'chi', 'don', 'chi', 'din', 'chi', 'chi', 'don', 'don', 'din'];
@@ -245,7 +245,7 @@ function playToque() {
 
 
 function playNextNote(noteIndex) {
-    var note = 0;
+    var note = -1;
     if (toqueArray[beatSelect.value][noteIndex] == 'chi') {
         note = 0;
     } else if (toqueArray[beatSelect.value][noteIndex] == 'don') {
@@ -255,7 +255,9 @@ function playNextNote(noteIndex) {
     } else if (toqueArray[beatSelect.value][noteIndex] == 'doinch') {
         note = 3;
     }
-    play(note);
+    if (note >= 0) {
+        play(note);
+    }
     if (playing) {
         var nextNote = noteIndex + 1;
         if (nextNote >= toqueArray[beatSelect.value].length) {
