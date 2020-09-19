@@ -7,7 +7,12 @@ html, body {
   width: 100px;
   height: 100px;
 }
-input[type=text]  {
+.noteInput  {
     width: 50px;
+    height: 40px;
+}
+
+#logInput {
+    width: 30px;
     height: 40px;
 }

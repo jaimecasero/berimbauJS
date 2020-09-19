@@ -35,35 +35,41 @@
 		  <option selected="selected" value="0">On</option>
 		  <option value="1">Off</option>
 	  </select>
+	  <label for="inputSelect" >Input:</label>
+	  <select id="inputSelect" onchange="changeInput();">
+		  <option selected="selected" value="0">Screen</option>
+		  <option value="1">Keyboard</option>
+		  <option value="2">Sensor</option>
+	  </select>
 	  <br>
 	  <br>
-	  <input type="text" id="note00">
-	  <input type="text" id="note01">
-	  <input type="text" id="note02">
-	  <input type="text" id="note03">
-	  <input type="text" id="note04">
-	  <input type="text" id="note05">
+	  <input type="text" id="note00" class="noteInput">
+	  <input type="text" id="note01" class="noteInput">
+	  <input type="text" id="note02" class="noteInput">
+	  <input type="text" id="note03" class="noteInput">
+	  <input type="text" id="note04" class="noteInput">
+	  <input type="text" id="note05" class="noteInput">
 	  <br>
-	  <input type="text" id="note10">
-	  <input type="text" id="note11">
-	  <input type="text" id="note12">
-	  <input type="text" id="note13">
-	  <input type="text" id="note14">
-	  <input type="text" id="note15">
+	  <input type="text" id="note10" class="noteInput">
+	  <input type="text" id="note11" class="noteInput">
+	  <input type="text" id="note12" class="noteInput">
+	  <input type="text" id="note13" class="noteInput">
+	  <input type="text" id="note14" class="noteInput">
+	  <input type="text" id="note15" class="noteInput">
 	  <br>
-	  <input type="text" id="note20">
-	  <input type="text" id="note21">
-	  <input type="text" id="note22">
-	  <input type="text" id="note23">
-	  <input type="text" id="note24">
-	  <input type="text" id="note25">
+	  <input type="text" id="note20" class="noteInput">
+	  <input type="text" id="note21" class="noteInput">
+	  <input type="text" id="note22" class="noteInput">
+	  <input type="text" id="note23" class="noteInput">
+	  <input type="text" id="note24" class="noteInput">
+	  <input type="text" id="note25" class="noteInput">
 	  <br>
-	  <input type="text" id="note30">
-	  <input type="text" id="note31">
-	  <input type="text" id="note32">
-	  <input type="text" id="note33">
-	  <input type="text" id="note34">
-	  <input type="text" id="note35">
+	  <input type="text" id="note30" class="noteInput">
+	  <input type="text" id="note31" class="noteInput">
+	  <input type="text" id="note32" class="noteInput">
+	  <input type="text" id="note33" class="noteInput">
+	  <input type="text" id="note34" class="noteInput">
+	  <input type="text" id="note35" class="noteInput">
 	  <br>
 	  <br>
 	  <input class="noteButton" type="button" id="input0" value="Chi" onmousedown="play(0)">
@@ -72,6 +78,9 @@
 	  <br>
 	  <input class="noteButton" type="button" id="input3" value="Doinch" onmousedown="play(3)">
 	  <input class="noteButton" type="button" id="input4" value="Caxixi" onmousedown="play(4)">
+
+	  <br>
+	  <input type="text" id="logInput">
   </form>
 
 </body>

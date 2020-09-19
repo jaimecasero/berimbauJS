@@ -14,6 +14,7 @@ const MAX_NOTE = 5;
 var typeSelect;
 var beatSelect;
 var caxixiSelect;
+var inputSelect;
 const inputElement=[];
 var currentNote = 0;
 
@@ -68,10 +69,10 @@ window.onload = init;
 	initAudio();
 
 
-
     typeSelect = document.getElementById('typeSelect');
     beatSelect = document.getElementById('beatSelect');
     caxixiSelect = document.getElementById('caxixiSelect');
+    inputSelect = document.getElementById('inputSelect');
 
     //register key handlers
 	document.addEventListener("keydown",keyDownHandler, false);
@@ -87,22 +88,63 @@ window.onload = init;
 
 
 
+
 ///////////////INPUT HANDLING/////////////////////////////////////////
 
+const ONE_ASCII = 49;
 function keyDownHandler(event) {
-	var keyPressed = String.fromCharCode(event.keyCode);
-    if (event.keyCode == 49) {
-        play(0);
-	}
-    if (event.keyCode == 50) {
-        play(1);
-	}
-    if (event.keyCode == 51) {
-        play(2);
-	}
+	var remainderFrom1 = event.keyCode % ONE_ASCII;
+	play(remainderFrom1);
 }
 
 function keyUpHandler(event) {
+}
+
+var lastXAccel = 0;
+var beatPlayed = false;
+var lastYQuaternation=0;
+
+function changeInput() {
+    if (inputSelect.value == 2) {
+        let acl = new Accelerometer({frequency: 60});
+
+        acl.addEventListener('reading', () => {
+          document.getElementById('logInput').value = acl.x + "," + acl.y + "," + acl.z;
+          if (acl.x < -5 && !beatPlayed) {
+            //accel enough to play
+            play(0);
+            //prevent same movement to play more than once
+            beatPlayed = true;
+          }
+          if (acl.x > -5 && beatPlayed) {
+            //acceleration decreased, allow new beat
+            beatPlayed = false;
+          }
+        });
+        acl.addEventListener('error', error => {
+          if (event.error.name == 'NotReadableError') {
+            document.getElementById("logInput").value="Accel is not available.";
+          }
+        });
+
+        acl.start();
+
+        const options = { frequency: 60, referenceFrame: 'device' };
+        const sensor = new AbsoluteOrientationSensor(options);
+
+        sensor.addEventListener('reading', () => {
+          // model is a Three.js object instantiated elsewhere.
+          lastYQuaternation =sensor.quaternion.y;
+        });
+        sensor.addEventListener('error', error => {
+          if (event.error.name == 'NotReadableError') {
+            document.getElementById("logInput").value="Orientation is not available.";
+          }
+        });
+        sensor.start();
+
+    }
+
 }
 
 
