@@ -1,14 +1,28 @@
 ////////////////////////MODEL //////////////////////////////////////
 const angola = ['chi', 'chi', 'don', 'din'];
+const angolaDelay = [250,400,500,800];
 const saoBentoPeq = ['chi', 'chi', 'din', 'don'];
+const saoBentoPeqDelay = [250,400,500,800];
 const saoBentoGrande = ['chi', 'chi', 'din', 'don', 'don'];
+const saoBentoGrandeDelay = [250,400,500,500,500];
 const benguela = ['chi', 'chi', 'don', 'din', 'din'];
+const benguelaDelay = [250,400,500,500,500];
 const santaMaria = ['chi', 'chi', 'don', 'don', 'don', 'don', 'chi', 'chi', 'don', 'don', 'don', 'din', 'chi', 'chi','din', 'din','din', 'din','chi', 'chi', 'din', 'din','din', 'don'];
+const santaMariaDelay = [250,500,500,500,500];
 const cavalaria = ['don', 'chi', 'don', 'chi', 'don', 'chi', 'don', 'din', 'don', 'chi', 'don', 'don', 'don', 'don', 'don', 'don', 'don', 'din', 'don', 'chi'];
+const cavalariaDelay = [250,500,500,500,500];
 const amazonas = ['chi', 'chi', 'don', 'don','din','', 'chi', 'chi', 'don', 'chi','don','din', 'chi', 'chi', 'don', 'don','don','don','din', 'don', 'chi', 'don','don','din'];
-const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', '', 'don', 'don', 'don', 'don', 'don', 'doinch','doinch', 'chi', 'don', 'doinch', 'doinch'];
-const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna];
-const toqueBeatArray = [4,4,5,5,6,5,6,5];
+const amazonasDelay = [250,500,500,500,500];
+const iuna = ['doinch', 'doinch', 'doinch', 'doinch', 'doinch', 'chi', 'don', 'doinch', 'doinch', '', 'don', 'don', 'don', 'don', 'don', 'doinch','doinch', 'chi', 'don', 'doinch'];
+const iunaDelay = [250,500,500,500,500];
+const saoBentoGrandeReg = ['chi', 'chi', 'don', 'don', 'din'];
+const saoBentoGrandeRegDelay = [250,400,500,500,500];
+const saoBentoGrandeBimba = ['chi', 'chi', 'don', 'chi', 'din', 'chi', 'chi', 'don', 'don', 'din'];
+const saoBentoGrandeBimbaDelay = [250,400,500,500,500,250,400,500,500,500];
+const toqueArray = [angola, saoBentoPeq, saoBentoGrande, benguela, santaMaria, cavalaria,amazonas,iuna, saoBentoGrandeReg, saoBentoGrandeBimba];
+const toqueDelayArray = [angolaDelay, saoBentoPeqDelay, saoBentoGrandeDelay, benguelaDelay, santaMariaDelay, cavalariaDelay,amazonasDelay,iunaDelay, saoBentoGrandeRegDelay, saoBentoGrandeBimbaDelay];
+
+const toqueBeatArray = [4,4,5,5,6,5,6,5,5,5];
 const MAX_NOTE = 5;
 ////////DOM CACHING//////////////////
 var typeSelect;
@@ -25,6 +39,7 @@ window.onload = init;
     // the code to be called when the dom has loaded
     // #document has its nodes
 	console.log("init");
+
 
     //cachec inputs and register touch
     for (var i = 0; i < MAX_NOTE; i++) {
@@ -102,48 +117,78 @@ function keyUpHandler(event) {
 
 var lastXAccel = 0;
 var beatPlayed = false;
-var lastYQuaternation=0;
-
+var accelerometer = null
+var orientationSensor = null;
 function changeInput() {
     if (inputSelect.value == 2) {
-        let acl = new Accelerometer({frequency: 60});
+            if (navigator.permissions) {
+                // https://w3c.github.io/orientation-sensor/#model
+                Promise.all([navigator.permissions.query({ name: "accelerometer" }),
+                             navigator.permissions.query({ name: "magnetometer" }),
+                             navigator.permissions.query({ name: "gyroscope" })])
+                       .then(results => {
+                            if (results.every(result => result.state === "granted")) {
+                                initSensors();
+                            } else {
+                                console.log("Permission to use sensor was denied.");
+                            }
+                       }).catch(err => {
+                            console.log("Integration with Permissions API is not enabled, still try to start app." + err);
+                            initSensors();
+                       });
+            } else {
+                console.log("No Permissions API, still try to start app.");
+                initSensor();
+            }
 
-        acl.addEventListener('reading', () => {
-          document.getElementById('logInput').value = acl.x + "," + acl.y + "," + acl.z;
-          if (acl.x < -5 && !beatPlayed) {
-            //accel enough to play
-            play(0);
-            //prevent same movement to play more than once
-            beatPlayed = true;
-          }
-          if (acl.x > -5 && beatPlayed) {
-            //acceleration decreased, allow new beat
-            beatPlayed = false;
-          }
-        });
-        acl.addEventListener('error', error => {
-          if (event.error.name == 'NotReadableError') {
-            document.getElementById("logInput").value="Accel is not available.";
-          }
-        });
-
-        acl.start();
-
-        const options = { frequency: 60, referenceFrame: 'device' };
-        const sensor = new AbsoluteOrientationSensor(options);
-
-        sensor.addEventListener('reading', () => {
-          // model is a Three.js object instantiated elsewhere.
-          lastYQuaternation =sensor.quaternion.y;
-        });
-        sensor.addEventListener('error', error => {
-          if (event.error.name == 'NotReadableError') {
-            document.getElementById("logInput").value="Orientation is not available.";
-          }
-        });
-        sensor.start();
-
+    } else {
+        console.log("Permissions API not available")
     }
+
+}
+
+function initSensors() {
+    accelerometer = new Accelerometer({frequency: 60});
+
+    accelerometer.addEventListener('reading', () => {
+      if (accelerometer.x < -5 && !beatPlayed) {
+        //accel enough to play
+        if (orientationSensor.quaternion.y < -4) {
+           play(1);
+        } else if (lastYQuaternation > 4) {
+           play(2);
+        } else {
+            play(0);
+        }
+        //prevent same movement to play more than once
+        beatPlayed = true;
+      }
+      if (accelerometer.x > -5 && beatPlayed) {
+        //acceleration decreased, allow new beat
+        beatPlayed = false;
+      }
+    });
+    accelerometer.addEventListener('error', error => {
+      if (event.error.name == 'NotReadableError') {
+        document.getElementById("logInput").value="Accel is not available.";
+      }
+    });
+
+
+    const options = { frequency: 60, referenceFrame: 'device' };
+    orientationSensor = new AbsoluteOrientationSensor(options);
+
+    orientationSensor.addEventListener('reading', () => {
+      document.getElementById("logInput").value=orientationSensor.quaternion.y;
+    });
+    orientationSensor.addEventListener('error', error => {
+      if (event.error.name == 'NotReadableError') {
+        document.getElementById("logInput").value="Orientation is not available.";
+      }
+    });
+
+    orientationSensor.start();
+    accelerometer.start();
 
 }
 
@@ -185,31 +230,57 @@ function changeType() {
 
 // create web audio api context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext);
-const chiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3";
-const dinURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3";
-const donURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3";
-const doinchURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/doinch.mp3";
-const caxixiURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/caxixi.mp3";
 const reverbImpulseURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/factory.hall.wav";
-const noteUrl = [chiURL, donURL, dinURL,doinchURL, caxixiURL];
-const mimeCodec = 'audio/mpeg';
 var gain;
 var convolver;
 var synthDelay;
 
 const audioElement = [];
-const track = [];
-const mediaSource = [];
+
+var playing = false;
+function playToque() {
+    playing = true;
+    setTimeout(playNextNote, 0, 0);
+}
+
+
+function playNextNote(noteIndex) {
+    var note = 0;
+    if (toqueArray[beatSelect.value][noteIndex] == 'chi') {
+        note = 0;
+    } else if (toqueArray[beatSelect.value][noteIndex] == 'don') {
+        note = 1;
+    } else if (toqueArray[beatSelect.value][noteIndex] == 'din') {
+        note = 2;
+    } else if (toqueArray[beatSelect.value][noteIndex] == 'doinch') {
+        note = 3;
+    }
+    play(note);
+    if (playing) {
+        var nextNote = noteIndex + 1;
+        if (nextNote >= toqueArray[beatSelect.value].length) {
+            nextNote = 0;
+        }
+        setTimeout(playNextNote, toqueDelayArray[beatSelect.value][noteIndex], nextNote);
+    }
+}
+function stop() {
+    playing = false;
+}
+
+
 
 function play(noteNumber) {
     console.log(noteNumber);
     audioCtx.resume();
-    audioElement[noteNumber].pause();
+    //interrupt all sounds, berimbau has a single string, only one sound
+    for (var i = 0 ; i < noteNumber ; i++) {
+        audioElement[noteNumber].pause();
+    }
     audioElement[noteNumber].currentTime = 0;
     audioElement[noteNumber].play();
     checkNoteMatch(noteNumber);
     if (caxixiSelect.value == 0) {
-        audioElement[4].pause();
         audioElement[4].currentTime = 0;
         audioElement[4].play();
 

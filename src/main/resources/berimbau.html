@@ -28,7 +28,8 @@
 		  <option value="5">Cavalaria</option>
 		  <option value="6">Amazonas</option>
 		  <option value="7">Iuna</option>
-
+		  <option value="8">SaoBentoGrandeReg</option>
+		  <option value="9">SaoBentoGrandeBimba</option>
 	  </select>
 	  <label for="caxixiSelect" >Caxixi:</label>
 	  <select id="caxixiSelect" onchange="changeBeat();">
@@ -42,6 +43,8 @@
 		  <option value="2">Sensor</option>
 	  </select>
 	  <br>
+	  <input type="button" id="playButton" value="Play" onmousedown="playToque()">
+	  <input type="button" id="stopButton"  value="Stop" onmousedown="stop()">
 	  <br>
 	  <input type="text" id="note00" class="noteInput" readonly>
 	  <input type="text" id="note01" class="noteInput" readonly>
