@@ -22,40 +22,43 @@
 	</audio>
 
   <form id="settingsForm" class="berimbauForm">
-	<label for="typeSelect" >Type:</label>
+	<label for="typeSelect" title="Changes berimbau sound">Type:</label>
 	<select id="typeSelect" onchange="changeType();">
 	   <option>gunga</option>
 	   <option selected="selected">medio</option>
 	   <option>viola</option>
 	  </select>
-	  <label for="beatSelect" >Toque:</label>
+	  <label for="beatSelect" title="Changes Toque for playing">Toque:</label>
 	  <select id="beatSelect" onchange="changeBeat();">
 		  <option selected="selected" value="0">Angola</option>
-		  <option value="1">SaoBentoPeq</option>
-		  <option value="2">SaoBentoGrande</option>
+		  <option value="1">SBPeqAngola</option>
+		  <option value="2">SBGrandeAngola</option>
 		  <option value="3">Benguela</option>
 		  <option value="4">SantaMaria</option>
 		  <option value="5">Cavalaria</option>
 		  <option value="6">Amazonas</option>
 		  <option value="7">Iuna</option>
-		  <option value="8">SaoBentoGrandeReg</option>
-		  <option value="9">SaoBentoGrandeBimba</option>
+		  <option value="8">SBGrandeReg</option>
+		  <option value="9">SBGrandeBimba</option>
 		  <option value="10">Idalina</option>
 	  </select>
-	  <label for="caxixiSelect" >Caxixi:</label>
+	  <label for="caxixiSelect" title="If on, caxixi will sound on every note">Caxixi:</label>
 	  <select id="caxixiSelect" onchange="changeBeat();">
 		  <option selected="selected" value="0">On</option>
 		  <option value="1">Off</option>
 	  </select>
-	  <label for="inputSelect" >Input:</label>
+	  <br>
+	  <label for="inputSelect" title="Keyboard(12345), Sensor(shake mobile)">Input:</label>
 	  <select id="inputSelect" onchange="changeInput();">
 		  <option selected="selected" value="0">Screen</option>
 		  <option value="1">Keyboard</option>
 		  <option value="2">Sensor</option>
+		  <option value="3">Mouse</option>
+
 	  </select>
 	  <br>
-	  <input type="button" id="playButton" value="Play" onmousedown="playToque()">
-	  <input type="button" id="stopButton"  value="Stop" onmousedown="stop()">
+	  <input type="button" id="playButton" value="Play" onmousedown="playToque()" title="will play current Toque">
+	  <input type="button" id="stopButton"  value="Stop" onmousedown="stop()" title="Stop playing Toque">
 	  <br>
 	  <input type="text" id="note00" class="noteInput" readonly>
 	  <input type="text" id="note01" class="noteInput" readonly>
