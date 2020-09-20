@@ -225,9 +225,13 @@ function clearAllNotes() {
 
 function changeType() {
     var typeValue = typeSelect.value;
-    for (var i = 0; i < audioElement.length; i++) {
-        audioElement[i].playbackRate=typeValue;
-    }
+    document.getElementById("source0").src = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/" + typeValue + "-chi.mp3";
+    audioElement[0].load;
+    document.getElementById("source1").src ="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/" + typeValue + "-don.mp3";
+    audioElement[1].load();
+    document.getElementById("source2").src = "https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/" + typeValue + "-din.mp3";
+    audioElement[2].load();
+    console.log("audio src changed");
 }
 ////////////////////// audio ctrl //////////////////////
 

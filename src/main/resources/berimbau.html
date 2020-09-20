@@ -5,18 +5,28 @@
 	<meta name="viewport" content="width=device-width,user-scalable=no">
 </head>
 <body>
-	<audio id="audio0" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/chi.mp3"></audio>
-	<audio id="audio1" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/don.mp3"></audio>
-	<audio id="audio2" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/din.mp3"></audio>
-	<audio id="audio3" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/doinch.mp3"></audio>
-	<audio id="audio4" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/caxixi.mp3"></audio>
+	<audio id="audio0" >
+		<source id="source0" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/medio-chi.mp3"/>
+	</audio>
+	<audio id="audio1">
+		<source id="source1" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/medio-don.mp3"/>
+	</audio>
+	<audio id="audio2">
+		<source id="source2" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/medio-din.mp3"/>
+	</audio>
+	<audio id="audio3">
+		<source id="source3" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/doinch.mp3"/>
+	</audio>
+	<audio id="audio4">
+		<source id="source4" src="https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/caxixi.mp3"/>
+	</audio>
 
   <form id="settingsForm" class="berimbauForm">
 	<label for="typeSelect" >Type:</label>
 	<select id="typeSelect" onchange="changeType();">
-	   <option  value="0.8">Gunga</option>
-	   <option selected="selected" value="1.0">Medio</option>
-	   <option value="1.2">Viola</option>
+	   <option>gunga</option>
+	   <option selected="selected">medio</option>
+	   <option>viola</option>
 	  </select>
 	  <label for="beatSelect" >Toque:</label>
 	  <select id="beatSelect" onchange="changeBeat();">
