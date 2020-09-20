@@ -32,9 +32,9 @@ var typeSelect;
 var beatSelect;
 var caxixiSelect;
 var inputSelect;
+var logInput;
 const inputElement=[];
 var currentNote = 0;
-
 (function(window, document, undefined){
 window.onload = init;
 
@@ -42,6 +42,13 @@ window.onload = init;
     // the code to be called when the dom has loaded
     // #document has its nodes
 	console.log("init");
+
+	//Cache DOMs
+    typeSelect = document.getElementById('typeSelect');
+    beatSelect = document.getElementById('beatSelect');
+    caxixiSelect = document.getElementById('caxixiSelect');
+    inputSelect = document.getElementById('inputSelect');
+    logInput = document.getElementById('logInput');
 
 
     //cachec inputs and register touch
@@ -87,10 +94,6 @@ window.onload = init;
 	initAudio();
 
 
-    typeSelect = document.getElementById('typeSelect');
-    beatSelect = document.getElementById('beatSelect');
-    caxixiSelect = document.getElementById('caxixiSelect');
-    inputSelect = document.getElementById('inputSelect');
 
     //register key handlers
 	document.addEventListener("keydown",keyDownHandler, false);
@@ -120,56 +123,62 @@ function keyUpHandler(event) {
 
 var lastXAccel = 0;
 var beatPlayed = false;
-var accelerometer = null
+var accelerometer = null;
+var gyroscope=null;
 var orientationSensor = null;
+var lightSensor = null;
 function changeInput() {
     if (inputSelect.value == 2) {
-            if (navigator.permissions) {
-                // https://w3c.github.io/orientation-sensor/#model
-                Promise.all([navigator.permissions.query({ name: "accelerometer" }),
-                             navigator.permissions.query({ name: "magnetometer" }),
-                             navigator.permissions.query({ name: "gyroscope" })])
-                       .then(results => {
-                            if (results.every(result => result.state === "granted")) {
-                                initSensors();
-                            } else {
-                                console.log("Permission to use sensor was denied.");
-                            }
-                       }).catch(err => {
-                            console.log("Integration with Permissions API is not enabled, still try to start app." + err);
-                            initSensors();
-                       });
-            } else {
-                console.log("No Permissions API, still try to start app.");
-                initSensor();
-            }
-
-    } else {
-        console.log("Permissions API not available")
+        initSensors();
     }
 
 }
 
+const ACCEL_X_THRESHOLD=-20;
+const ACCEL_Z_THRESHOLD=-10;
+const ACCEL_CHI = -5;
+const ACCEL_DON = -40;
+const ACCEL_DIN = -20;
+const ACCEL_FREQ = 60;
+var lastAccelX = 0;
 function initSensors() {
-    accelerometer = new Accelerometer({frequency: 60});
+
+
+    accelerometer = new Accelerometer({frequency: ACCEL_FREQ});
 
     accelerometer.addEventListener('reading', () => {
-      if (accelerometer.x < -5 && !beatPlayed) {
+      if (accelerometer.x > lastAccelX && lastAccelX < ACCEL_CHI )
+      {
+        logInput.value=accelerometer.x + "|" + lastAccelX
+        if (lastAccelX < ACCEL_DON) {
+            play(1);
+        }else if(lastAccelX < ACCEL_DIN) {
+            play(2);
+        } else if (lastAccelX < ACCEL_CHI) {
+            play(0)
+        }
+        lastAccelX = 0;
+      } else {
+        lastAccelX = accelerometer.x;
+      }
+      /*
+      if (accelerometer.x < ACCEL_X_THRESHOLD && !beatPlayed) {
+        logInput.value=accelerometer.x + "|" + accelerometer.y + "|" + accelerometer.z;
         //accel enough to play
-        if (orientationSensor.quaternion.y < -4) {
+        if (accelerometer.y < ACCEL_Z_THRESHOLD) {
            play(1);
-        } else if (lastYQuaternation > 4) {
+        } else if (accelerometer.y > Math.abs(ACCEL_Z_THRESHOLD)) {
            play(2);
         } else {
-            play(0);
+           play(0);
         }
         //prevent same movement to play more than once
         beatPlayed = true;
       }
-      if (accelerometer.x > -5 && beatPlayed) {
+      if (accelerometer.x > ACCEL_X_THRESHOLD && beatPlayed) {
         //acceleration decreased, allow new beat
         beatPlayed = false;
-      }
+      }*/
     });
     accelerometer.addEventListener('error', error => {
       if (event.error.name == 'NotReadableError') {
@@ -177,21 +186,9 @@ function initSensors() {
       }
     });
 
-
-    const options = { frequency: 60, referenceFrame: 'device' };
-    orientationSensor = new AbsoluteOrientationSensor(options);
-
-    orientationSensor.addEventListener('reading', () => {
-      document.getElementById("logInput").value=orientationSensor.quaternion.y;
-    });
-    orientationSensor.addEventListener('error', error => {
-      if (event.error.name == 'NotReadableError') {
-        document.getElementById("logInput").value="Orientation is not available.";
-      }
-    });
-
-    orientationSensor.start();
     accelerometer.start();
+
+
 
 }
 
@@ -327,18 +324,6 @@ function checkNoteMatch(noteNumber) {
 
 function initAudio() {
     console.log("init audio");
-    gain = audioCtx.createGain();
-    console.log("gain crated");
-
-    //set a very low gain value to  make it as quiet as possible
-    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
-    gain.connect(audioCtx.destination);
-    convolver = audioCtx.createConvolver();
-    convolver.connect(gain);
-    console.log("convolver crated");
-
-    loadImpulse(reverbImpulseURL);
-    console.log("impulse loaded");
 
     for (var i = 0; i < MAX_NOTE; i++) {
 
@@ -349,20 +334,3 @@ function initAudio() {
 
     console.log("audio started")
 }
-
-var loadImpulse = function ( url )
-{
-  var request = new XMLHttpRequest();
-  request.open( "GET", url, true );
-  request.responseType = "arraybuffer";
-  request.onload = function ()
-  {
-    audioCtx.decodeAudioData( request.response, function ( buffer ) {
-      convolver.buffer = buffer;
-    }, function ( e ) { console.log( e ); } );
-  };request.onerror = function ( e )
-  {
-    console.log( e );
-  };
-  request.send();
-};
