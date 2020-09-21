@@ -27,6 +27,13 @@ const toqueDelayArray = [angolaDelay, saoBentoPeqDelay, saoBentoGrandeDelay, ben
 
 const toqueBeatArray = [4,4,5,5,6,5,6,5,5,5,3];
 const MAX_NOTE = 5;
+const CHI_NOTE_INDEX=0;
+const DON_NOTE_INDEX=1;
+const DIN_NOTE_INDEX=2;
+const DOINCH_NOTE_INDEX=3;
+const CAXIXI_NOTE_INDEX=4;
+const INDEX_TO_NOTE_MAP = ["chi", "don", "din", "doinch", "caxixi"];
+
 ////////DOM CACHING//////////////////
 var typeSelect;
 var beatSelect;
@@ -56,37 +63,37 @@ window.onload = init;
         inputElement[i] = document.getElementById('input' + i);
     }
     //register multitouch listener
-    inputElement[0].addEventListener('touchstart', function(event) {
+    inputElement[CHI_NOTE_INDEX].addEventListener('touchstart', function(event) {
           event.preventDefault();
           //resume audiocontext on canvas touch
           audioCtx.resume();
-          play(0);
+          play(CHI_NOTE_INDEX);
     }, false);
     //register multitouch listener
-    inputElement[1].addEventListener('touchstart', function(event) {
+    inputElement[DON_NOTE_INDEX].addEventListener('touchstart', function(event) {
           event.preventDefault();
           //resume audiocontext on canvas touch
           audioCtx.resume();
-          play(1);
+          play(DON_NOTE_INDEX);
     }, false);
     //register multitouch listener
-    inputElement[2].addEventListener('touchstart', function(event) {
+    inputElement[DIN_NOTE_INDEX].addEventListener('touchstart', function(event) {
           event.preventDefault();
           //resume audiocontext on canvas touch
           audioCtx.resume();
-          play(2);
+          play(DIN_NOTE_INDEX);
     }, false);
-    inputElement[3].addEventListener('touchstart', function(event) {
+    inputElement[DOINCH_NOTE_INDEX].addEventListener('touchstart', function(event) {
           event.preventDefault();
           //resume audiocontext on canvas touch
           audioCtx.resume();
-          play(3);
+          play(DOINCH_NOTE_INDEX);
     }, false);
-    inputElement[4].addEventListener('touchstart', function(event) {
+    inputElement[CAXIXI_NOTE_INDEX].addEventListener('touchstart', function(event) {
           event.preventDefault();
           //resume audiocontext on canvas touch
           audioCtx.resume();
-          play(4);
+          play(CAXIXI_NOTE_INDEX);
     }, false);
 
 
@@ -127,6 +134,7 @@ var accelerometer = null;
 var gyroscope=null;
 var orientationSensor = null;
 var lightSensor = null;
+
 function changeInput() {
     if (inputSelect.value == 2) {
         initSensors();
@@ -151,45 +159,24 @@ function initSensors() {
       {
         logInput.value=accelerometer.x + "|" + lastAccelX
         if (lastAccelX < ACCEL_DON) {
-            play(1);
+            play(DON_NOTE_INDEX);
         }else if(lastAccelX < ACCEL_DIN) {
-            play(2);
+            play(DIN_NOTE_INDEX);
         } else if (lastAccelX < ACCEL_CHI) {
-            play(0)
+            play(CHI_NOTE_INDEX)
         }
         lastAccelX = 0;
       } else {
         lastAccelX = accelerometer.x;
       }
-      /*
-      if (accelerometer.x < ACCEL_X_THRESHOLD && !beatPlayed) {
-        logInput.value=accelerometer.x + "|" + accelerometer.y + "|" + accelerometer.z;
-        //accel enough to play
-        if (accelerometer.y < ACCEL_Z_THRESHOLD) {
-           play(1);
-        } else if (accelerometer.y > Math.abs(ACCEL_Z_THRESHOLD)) {
-           play(2);
-        } else {
-           play(0);
-        }
-        //prevent same movement to play more than once
-        beatPlayed = true;
-      }
-      if (accelerometer.x > ACCEL_X_THRESHOLD && beatPlayed) {
-        //acceleration decreased, allow new beat
-        beatPlayed = false;
-      }*/
     });
     accelerometer.addEventListener('error', error => {
       if (event.error.name == 'NotReadableError') {
-        document.getElementById("logInput").value="Accel is not available.";
+        logInput.value="Accel is not available.";
       }
     });
 
     accelerometer.start();
-
-
-
 }
 
 
@@ -206,6 +193,8 @@ function changeBeat() {
         var row = Math.floor(i / toqueBeatArray[beatIndex]);
         var noteInput = document.getElementById("note" + row + remainder );
         noteInput.value = toqueArray[beatIndex][i];
+        var noteIndex =  INDEX_TO_NOTE_MAP.indexOf(toqueArray[beatIndex][i]);
+        noteInput.style.backgroundColor = getComputedStyle(inputElement[noteIndex]).backgroundColor;
     }
 }
 
@@ -251,13 +240,13 @@ function playToque() {
 function playNextNote(noteIndex) {
     var note = -1;
     if (toqueArray[beatSelect.value][noteIndex] == 'chi') {
-        note = 0;
+        note = CHI_NOTE_INDEX;
     } else if (toqueArray[beatSelect.value][noteIndex] == 'don') {
-        note = 1;
+        note = DON_NOTE_INDEX;
     } else if (toqueArray[beatSelect.value][noteIndex] == 'din') {
-        note = 2;
+        note = DIN_NOTE_INDEX;
     } else if (toqueArray[beatSelect.value][noteIndex] == 'doinch') {
-        note = 3;
+        note = DOINCH_NOTE_INDEX;
     }
     if (note >= 0) {
         play(note);
@@ -287,11 +276,9 @@ function play(noteNumber) {
     audioElement[noteNumber].play();
     checkNoteMatch(noteNumber);
     if (caxixiSelect.value == 0) {
-        audioElement[4].currentTime = 0;
-        audioElement[4].play();
-
+        audioElement[CAXIXI_NOTE_INDEX].currentTime = 0;
+        audioElement[CAXIXI_NOTE_INDEX].play();
     }
-
 }
 
 function checkNoteMatch(noteNumber) {
@@ -300,10 +287,10 @@ function checkNoteMatch(noteNumber) {
     var row = Math.floor(currentNote / toqueBeatArray[beatIndex]);
     var noteInput = document.getElementById("note" + row + remainder );
     var color = "green";
-    if ((noteNumber == 0 && toqueArray[beatIndex][currentNote] == 'chi') ||
-    (noteNumber == 1 && toqueArray[beatIndex][currentNote] == 'don') ||
-    (noteNumber == 2 && toqueArray[beatIndex][currentNote] == 'din') ||
-    (noteNumber == 3 && toqueArray[beatIndex][currentNote] == 'doinch')) {
+    if ((noteNumber == CHI_NOTE_INDEX && toqueArray[beatIndex][currentNote] == 'chi') ||
+    (noteNumber == DON_NOTE_INDEX && toqueArray[beatIndex][currentNote] == 'don') ||
+    (noteNumber == DIN_NOTE_INDEX && toqueArray[beatIndex][currentNote] == 'din') ||
+    (noteNumber == DOINCH_NOTE_INDEX && toqueArray[beatIndex][currentNote] == 'doinch')) {
         color = "green";
         currentNote = currentNote + 1;
 
@@ -316,6 +303,7 @@ function checkNoteMatch(noteNumber) {
         currentNote = currentNote + 1;
     }
     if (currentNote >= toqueArray[beatIndex].length) {
+        //start from the beginning;
         currentNote = 0;
         changeBeat();
     }
