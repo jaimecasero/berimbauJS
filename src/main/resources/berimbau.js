@@ -145,8 +145,8 @@ function changeInput() {
 const ACCEL_X_THRESHOLD=-20;
 const ACCEL_Z_THRESHOLD=-10;
 const ACCEL_CHI = -5;
-const ACCEL_DON = -40;
-const ACCEL_DIN = -20;
+const ACCEL_DON = -55;
+const ACCEL_DIN = -25;
 const ACCEL_FREQ = 60;
 var lastAccelX = 0;
 function initSensors() {
@@ -192,7 +192,8 @@ function changeBeat() {
         var remainder = i % toqueBeatArray[beatIndex];
         var row = Math.floor(i / toqueBeatArray[beatIndex]);
         var noteInput = document.getElementById("note" + row + remainder );
-        noteInput.value = toqueArray[beatIndex][i];
+        var noteDuration = Math.floor( toqueDelayArray[beatIndex][i] / 100);
+        noteInput.value = toqueArray[beatIndex][i] + noteDuration;// "\u{" + noteDuration + "}";
         var noteIndex =  INDEX_TO_NOTE_MAP.indexOf(toqueArray[beatIndex][i]);
         noteInput.style.backgroundColor = getComputedStyle(inputElement[noteIndex]).backgroundColor;
     }
@@ -224,11 +225,11 @@ function changeType() {
 // create web audio api context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext);
 const reverbImpulseURL = "https://cors-anywhere.herokuapp.com/https://github.com/jaimecasero/berimbauJS/raw/master/src/main/resources/factory.hall.wav";
-var gain;
 var convolver;
 var synthDelay;
 
 const audioElement = [];
+const track = [];
 
 var playing = false;
 function playToque() {
@@ -320,5 +321,36 @@ function initAudio() {
     };
 
 
+    convolver = audioCtx.createConvolver();
+    convolver.connect(audioCtx.destination);
+    loadImpulse(reverbImpulseURL);
+
+    for (var i = 0; i < 4; i++) {
+        //track[i] = audioCtx.createMediaElementSource(audioElement[i]);
+    }
+
     console.log("audio started")
 }
+
+function connectConvolver() {
+    for (var i = 0; i < 4; i++) {
+        track[i].connect(convolver);
+    }
+}
+
+var loadImpulse = function ( url )
+{
+  var request = new XMLHttpRequest();
+  request.open( "GET", url, true );
+  request.responseType = "arraybuffer";
+  request.onload = function ()
+  {
+    audioCtx.decodeAudioData( request.response, function ( buffer ) {
+      convolver.buffer = buffer;
+    }, function ( e ) { console.log( e ); } );
+  };request.onerror = function ( e )
+  {
+    console.log( e );
+  };
+  request.send();
+};
